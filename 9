@@ -1,0 +1,55 @@
+# AI 9: N-Queens Problem (Constraint Satisfaction)
+
+def solve_n_queens(N):
+    # Create an empty N x N board ('.' means empty, 'Q' means Queen)
+    board = [['.' for _ in range(N)] for _ in range(N)]
+    
+    # Branch and Bound arrays to track unsafe zones instantly
+    cols = [False] * N
+    # Formula for Left Diagonal index: row - col + (N - 1)
+    left_diag = [False] * (2 * N - 1)
+    # Formula for Right Diagonal index: row + col
+    right_diag = [False] * (2 * N - 1)
+    
+    def backtrack(row):
+        # Base case: If we successfully reached row N, all queens are placed!
+        if row == N:
+            print(f"Solution found for {N}-Queens:")
+            for r in board:
+                print(" ".join(r))
+            print()
+            return True # Return True to stop after finding the first solution
+            
+        res = False
+        # Try placing a queen in every column of the current row
+        for col in range(N):
+            ld_idx = row - col + (N - 1)
+            rd_idx = row + col
+            
+            # Constraint Satisfaction: Check if this spot is safe
+            if not cols[col] and not left_diag[ld_idx] and not right_diag[rd_idx]:
+                
+                # 1. PLACE THE QUEEN (Branch)
+                board[row][col] = 'Q'
+                cols[col] = True
+                left_diag[ld_idx] = True
+                right_diag[rd_idx] = True
+                
+                # 2. RECURSE to the next row
+                # If it returns True, it cascades up and finishes the program
+                res = backtrack(row + 1) or res
+                
+                # 3. REMOVE THE QUEEN (Backtrack)
+                board[row][col] = '.'
+                cols[col] = False
+                left_diag[ld_idx] = False
+                right_diag[rd_idx] = False
+                
+        return res
+
+    # Start the algorithm from row 0
+    if not backtrack(0):
+        print("No solution exists for this board size.")
+
+# Test the code for a standard 4x4 board
+solve_n_queens(4)
