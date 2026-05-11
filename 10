@@ -1,0 +1,41 @@
+# AI 10: Elementary Customer Interaction Chatbot
+
+def customer_bot():
+    print("Bot: Hello! Welcome to TechStore Support.")
+    print("Bot: (Type 'bye' or 'exit' to close the chat)\n")
+    
+    # Dictionary of keywords and their corresponding responses
+    responses = {
+        "hello": "Hi there! How can I help you today?",
+        "hi": "Hello! What can I assist you with?",
+        "hours": "We are open from 9 AM to 9 PM, Monday to Saturday.",
+        "location": "Our main branch is located in Pimpri-Chinchwad.",
+        "refund": "You can return products within 7 days of purchase with the original receipt.",
+        "contact": "You can reach our support desk at support@techstore.com or call 1800-123-456.",
+        "delivery": "Standard delivery takes 3-5 business days."
+    }
+    
+    # Infinite loop to keep the chat running
+    while True:
+        # Get user input and convert to lowercase to make matching easier
+        user_input = input("You: ").lower()
+        
+        # Base condition to break the loop
+        if 'bye' in user_input or 'exit' in user_input:
+            print("Bot: Thank you for reaching out. Have a great day!")
+            break
+            
+        # Search the user's input for any of our keywords
+        found = False
+        for keyword in responses:
+            if keyword in user_input:
+                print(f"Bot: {responses[keyword]}")
+                found = True
+                break # Stop searching once we find a match
+                
+        # If no keywords matched
+        if not found:
+            print("Bot: I'm sorry, I didn't quite catch that. You can ask about our hours, location, delivery, refunds, or contact info.")
+
+# Run the chatbot
+customer_bot()
