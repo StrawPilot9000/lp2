@@ -1,0 +1,54 @@
+# AI 11: Medical Expert System (Hospitals and Medical Facilities)
+
+def medical_expert_system():
+    print("Welcome to the Medical Expert System")
+    print("Answer 'yes' or 'no' to the following symptoms:\n")
+
+    # 1. THE KNOWLEDGE BASE (Data/Rules)
+    knowledge_base = {
+        "Common Cold": ["cough", "runny nose", "sneezing", "sore throat"],
+        "Flu (Influenza)": ["fever", "body ache", "fatigue", "cough"],
+        "Food Poisoning": ["nausea", "vomiting", "stomach pain", "diarrhea"]
+    }
+
+    # Extract a list of all unique symptoms from our knowledge base
+    all_symptoms = []
+    for symptoms in knowledge_base.values():
+        for s in symptoms:
+            if s not in all_symptoms:
+                all_symptoms.append(s)
+
+    # 2. GATHER PATIENT DATA
+    patient_symptoms = []
+    for symptom in all_symptoms:
+        ans = input(f"Do you have {symptom}? (yes/no): ").lower()
+        if ans == 'yes' or ans == 'y':
+            patient_symptoms.append(symptom)
+
+    # 3. THE INFERENCE ENGINE (Match data to knowledge base)
+    print("\n--- Diagnosis Result ---")
+    max_score = 0
+    likely_disease = "Unknown Condition"
+
+    for disease, symptoms in knowledge_base.items():
+        # Calculate how many of the patient's symptoms match this specific disease
+        score = 0
+        for s in patient_symptoms:
+            if s in symptoms:
+                score += 1
+                
+        # If this disease has the highest match score so far, update our diagnosis
+        if score > max_score:
+            max_score = score
+            likely_disease = disease
+
+    # 4. OUTPUT RESULT
+    if max_score > 0:
+        print(f"Based on your symptoms, you likely have: {likely_disease}")
+        print(f"(Matched {max_score} symptoms)")
+        print("Disclaimer: Please consult a real doctor for professional medical advice.")
+    else:
+        print("You have no matching symptoms. You seem to be healthy!")
+
+# Run the program
+medical_expert_system()
