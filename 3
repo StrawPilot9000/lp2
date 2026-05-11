@@ -1,0 +1,57 @@
+import heapq
+
+# 1. The Heuristic Function: Count attacking pairs
+def get_heuristic(board):
+    h = 0
+    # Check every pair of queens
+    for i in range(len(board)):
+        for j in range(i + 1, len(board)):
+            # If they share the same column OR same diagonal, they attack!
+            if board[i] == board[j] or abs(board[i] - board[j]) == abs(i - j):
+                h += 1
+    return h
+
+# 2. The A* Search
+def a_star_4_queens():
+    N = 4
+    # Board representation: Index is Row, Value is Column.
+    # Start with all 4 queens in the first column: [0, 0, 0, 0]
+    start_board = [0, 0, 0, 0]
+    
+    # Priority Queue stores tuples: (f_score, g_score, board_state)
+    g = 0
+    h = get_heuristic(start_board)
+    pq = [(g + h, g, start_board)]
+    
+    visited = set()
+    
+    while pq:
+        # Pop the state with the lowest f_score
+        f, current_g, board = heapq.heappop(pq)
+        
+        # 3. Base/Goal Condition: 0 attacking pairs!
+        if get_heuristic(board) == 0:
+            print("Solution found (Column indices per row):", board)
+            print("\nChessboard:")
+            for col in board:
+                print(". " * col + "Q " + ". " * (N - col - 1))
+            return
+            
+        visited.add(tuple(board))
+        
+        # 4. Generate Neighbors: Try moving one queen at a time
+        for row in range(N):
+            for col in range(N):
+                if board[row] != col:
+                    new_board = list(board)
+                    new_board[row] = col # Move the queen in this row to a new column
+                    
+                    if tuple(new_board) not in visited:
+                        new_g = current_g + 1              # Update cost
+                        new_h = get_heuristic(new_board)   # Calculate new heuristic
+                        new_f = new_g + new_h              # f(n) = g(n) + h(n)
+                        
+                        heapq.heappush(pq, (new_f, new_g, new_board))
+
+# Run the algorithm
+a_star_4_queens()
