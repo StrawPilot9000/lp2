@@ -1,0 +1,39 @@
+# 1. Define the undirected graph
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+# 2. The Recursive BFS Function
+def bfs_recursive(graph, queue, visited=None):
+    # Initialize the visited set on the first run
+    if visited is None:
+        visited = set()
+        
+    # Base condition: if the queue is empty, we are done searching
+    if not queue:
+        return
+        
+    # 3. Process the front of the queue
+    current_node = queue.pop(0) # Pop the first element
+    
+    if current_node not in visited:
+        print(current_node, end=" ") # Print the node
+        visited.add(current_node)    # Mark it as visited
+        
+        # 4. Add all unvisited neighbors to the back of the queue
+        for neighbor in graph[current_node]:
+            if neighbor not in visited and neighbor not in queue:
+                queue.append(neighbor)
+                
+    # 5. The Recursive Step: Call the function again with the updated queue
+    bfs_recursive(graph, queue, visited)
+
+# Run the code starting from node 'A'
+print("BFS Traversal Output:")
+# Note: We pass the starting node inside a list to act as our initial queue
+bfs_recursive(graph, ['A'])
