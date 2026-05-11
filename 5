@@ -1,0 +1,71 @@
+# AI 5 (Part A): Selection Sort
+
+def selection_sort(arr):
+    n = len(arr)
+    
+    for i in range(n):
+        # Assume the first unsorted element is the minimum
+        min_idx = i
+        
+        # Greedily search for a smaller element in the rest of the array
+        for j in range(i + 1, n):
+            if arr[j] < arr[min_idx]:
+                min_idx = j # Found a new minimum!
+                
+        # Swap the found minimum with the first unsorted element
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]
+        
+    return arr
+
+# Test the code
+numbers = [64, 25, 12, 22, 11]
+print("Original Array:", numbers)
+print("Sorted Array:  ", selection_sort(numbers))
+
+
+
+# AI 5 (Part B): Prim's Minimum Spanning Tree
+
+# 1. Setup an Adjacency Matrix (0 means no edge)
+# Nodes: A=0, B=1, C=2, D=3, E=4
+graph = [
+    [0, 2, 0, 6, 0],
+    [2, 0, 3, 8, 5],
+    [0, 3, 0, 0, 7],
+    [6, 8, 0, 0, 9],
+    [0, 5, 7, 9, 0]
+]
+
+def prims_mst(graph):
+    V = len(graph)
+    # Track which nodes we have added to our tree
+    selected = [False] * V
+    selected[0] = True # Start with the first node
+    
+    edges_count = 0
+    print("Edge \tWeight")
+    
+    # We need exactly V-1 edges for a spanning tree
+    while edges_count < V - 1:
+        minimum = float('inf') # Start with infinity
+        x = 0
+        y = 0
+        
+        # 2. Greedily find the cheapest edge connecting a visited node to an unvisited node
+        for i in range(V):
+            if selected[i]: # If node 'i' is in our tree
+                for j in range(V):
+                    # If node 'j' is NOT in tree AND there is an edge between them
+                    if not selected[j] and graph[i][j] != 0:  
+                        if graph[i][j] < minimum:
+                            minimum = graph[i][j]
+                            x = i
+                            y = j
+                            
+        # 3. Add the cheapest edge to our tree
+        print(f"{x} - {y} \t  {graph[x][y]}")
+        selected[y] = True
+        edges_count += 1
+
+# Run the code
+prims_mst(graph)
