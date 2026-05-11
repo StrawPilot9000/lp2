@@ -1,0 +1,92 @@
+# AI 8 (Part A): Kruskal's Minimum Spanning Tree
+
+def kruskals_mst(V, edges):
+    # 1. Sort all edges based on weight (index 2)
+    edges.sort(key=lambda x: x[2])
+    
+    # Track the "parent" of each node to detect cycles
+    # Initially, every node is its own parent: [0, 1, 2, 3, ...]
+    parent = list(range(V))
+    
+    # 2. Helper function to find the root parent of a node
+    def find_root(i):
+        if parent[i] == i:
+            return i
+        return find_root(parent[i])
+        
+    print("Edge \tWeight")
+    
+    # 3. Greedily pick the cheapest edges
+    for u, v, weight in edges:
+        root_u = find_root(u)
+        root_v = find_root(v)
+        
+        # If they have different roots, adding this edge WON'T create a loop
+        if root_u != root_v:
+            print(f"{u} - {v} \t  {weight}")
+            # Connect them by making one root the parent of the other (Union)
+            parent[root_u] = root_v
+
+# Format: (Node1, Node2, Weight)
+# Example graph with 4 vertices (0 to 3)
+graph_edges = [
+    (0, 1, 10), 
+    (0, 2, 6), 
+    (0, 3, 5), 
+    (1, 3, 15), 
+    (2, 3, 4)
+]
+
+kruskals_mst(4, graph_edges)
+
+
+
+# AI 8 (Part B): Dijkstra's Shortest Path
+
+# 1. Same Adjacency Matrix style as Prim's (0 means no edge)
+graph = [
+    [0, 4, 0, 0, 0, 0, 0, 8, 0],
+    [4, 0, 8, 0, 0, 0, 0, 11, 0],
+    [0, 8, 0, 7, 0, 4, 0, 0, 2],
+    [0, 0, 7, 0, 9, 14, 0, 0, 0],
+    [0, 0, 0, 9, 0, 10, 0, 0, 0],
+    [0, 0, 4, 14, 10, 0, 2, 0, 0],
+    [0, 0, 0, 0, 0, 2, 0, 1, 6],
+    [8, 11, 0, 0, 0, 0, 1, 0, 7],
+    [0, 0, 2, 0, 0, 0, 6, 7, 0]
+]
+
+def dijkstra(graph, start_node):
+    V = len(graph)
+    # Distances array starts at infinity, visited array starts False
+    distances = [float('inf')] * V
+    visited = [False] * V
+    
+    # Distance to start node is always 0
+    distances[start_node] = 0
+    
+    for _ in range(V):
+        # 2. Greedily find the unvisited node with the smallest known distance
+        min_dist = float('inf')
+        u = -1
+        for i in range(V):
+            if not visited[i] and distances[i] < min_dist:
+                min_dist = distances[i]
+                u = i
+                
+        visited[u] = True # Mark it as processed
+        
+        # 3. Update the distances to its neighbors
+        for v in range(V):
+            # If there's an edge AND neighbor is unvisited AND new path is cheaper:
+            if graph[u][v] > 0 and not visited[v] and distances[v] > distances[u] + graph[u][v]:
+                distances[v] = distances[u] + graph[u][v] # Update shortcut!
+                
+    # Print the results
+    print("Vertex \t Distance from Source")
+    for i in range(V):
+        print(f"{i} \t\t {distances[i]}")
+
+# Run it starting from Node 0
+dijkstra(graph, 0)
+
