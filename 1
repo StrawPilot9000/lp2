@@ -1,0 +1,28 @@
+# 1. Define the undirected graph using a dictionary (Adjacency List)
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+# 2. The Recursive DFS Function
+def dfs_recursive(graph, current_node, visited=None):
+    # Initialize the visited set on the first run
+    if visited is None:
+        visited = set()
+        
+    # Base condition / Processing
+    if current_node not in visited:
+        print(current_node, end=" ") # Print the node
+        visited.add(current_node)    # Mark it as visited
+        
+        # 3. The Recursive Step: Dive deep into neighbors
+        for neighbor in graph[current_node]:
+            dfs_recursive(graph, neighbor, visited)
+
+# Run the code starting from node 'A'
+print("DFS Traversal Output:")
+dfs_recursive(graph, 'A')
