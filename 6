@@ -1,0 +1,95 @@
+# AI 6 (Part A): Dijkstra's Shortest Path
+
+# 1. Same Adjacency Matrix style as Prim's (0 means no edge)
+graph = [
+    [0, 4, 0, 0, 0, 0, 0, 8, 0],
+    [4, 0, 8, 0, 0, 0, 0, 11, 0],
+    [0, 8, 0, 7, 0, 4, 0, 0, 2],
+    [0, 0, 7, 0, 9, 14, 0, 0, 0],
+    [0, 0, 0, 9, 0, 10, 0, 0, 0],
+    [0, 0, 4, 14, 10, 0, 2, 0, 0],
+    [0, 0, 0, 0, 0, 2, 0, 1, 6],
+    [8, 11, 0, 0, 0, 0, 1, 0, 7],
+    [0, 0, 2, 0, 0, 0, 6, 7, 0]
+]
+
+def dijkstra(graph, start_node):
+    V = len(graph)
+    # Distances array starts at infinity, visited array starts False
+    distances = [float('inf')] * V
+    visited = [False] * V
+    
+    # Distance to start node is always 0
+    distances[start_node] = 0
+    
+    for _ in range(V):
+        # 2. Greedily find the unvisited node with the smallest known distance
+        min_dist = float('inf')
+        u = -1
+        for i in range(V):
+            if not visited[i] and distances[i] < min_dist:
+                min_dist = distances[i]
+                u = i
+                
+        visited[u] = True # Mark it as processed
+        
+        # 3. Update the distances to its neighbors
+        for v in range(V):
+            # If there's an edge AND neighbor is unvisited AND new path is cheaper:
+            if graph[u][v] > 0 and not visited[v] and distances[v] > distances[u] + graph[u][v]:
+                distances[v] = distances[u] + graph[u][v] # Update shortcut!
+                
+    # Print the results
+    print("Vertex \t Distance from Source")
+    for i in range(V):
+        print(f"{i} \t\t {distances[i]}")
+
+# Run it starting from Node 0
+dijkstra(graph, 0)
+
+
+
+
+# AI 6 (Part B): Job Scheduling with Deadlines
+
+def job_scheduling(jobs, max_deadline):
+    # 1. Sort jobs in descending order based on Profit (Index 2)
+    # lambda x: x[2] tells python to look at the 3rd item in the job list
+    jobs.sort(key=lambda x: x[2], reverse=True)
+    
+    # Array to keep track of free time slots
+    slots = [False] * max_deadline
+    # Array to store the final job sequence
+    schedule = ['-'] * max_deadline
+    total_profit = 0
+    
+    # 2. Greedily place jobs
+    for job in jobs:
+        job_id, deadline, profit = job
+        
+        # Try finding a slot from the deadline backwards
+        # Note: We do min() just in case a deadline is higher than max_deadline
+        # We do deadline - 1 because array indexes start at 0
+        for j in range(min(max_deadline - 1, deadline - 1), -1, -1):
+            if not slots[j]: # If slot is free
+                slots[j] = True
+                schedule[j] = job_id
+                total_profit += profit
+                break # Move on to the next job
+                
+    return schedule, total_profit
+
+# Format: [Job_ID, Deadline, Profit]
+jobs_list = [
+    ['J1', 2, 100],
+    ['J2', 1, 19],
+    ['J3', 2, 27],
+    ['J4', 1, 25],
+    ['J5', 3, 15]
+]
+
+# Run it assuming the maximum timeline is 3 slots
+final_schedule, profit = job_scheduling(jobs_list, 3)
+
+print("Scheduled Jobs:", final_schedule)
+print("Total Profit:", profit)
